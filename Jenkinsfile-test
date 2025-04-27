@@ -1,0 +1,34 @@
+def tag = "latest"
+def harbor_url = "xxx:18080"
+def harbor_project = "test"
+def harbor_auth = "xxx"
+node {
+    def selectProjectNames = "${name}".split(",")
+    def serverNames = "${server}".split(",")
+    stage('拉取代码'){
+    git branch: 'test', credentialsId: 'xxx', url: 'http://xxx33333/backend/xxx.git'
+    }
+    stage('安装 公共类'){
+        sh "mvn -f recharge-common clean install"
+        sh "mvn -f recharge-api clean install"
+        }
+    stage('编译 打包 上传镜像'){
+        for(int i=0;i<selectProjectNames.length;i++){
+        def projectInfo = selectProjectNames[i];
+        def currentProjectName = "${projectInfo}".split("@")[0]
+        def currentProjectPort = "${projectInfo}".split("@")[1]
+        sh "mvn -f ${currentProjectName} clean package dockerfile:build"
+                 def imageName = "${currentProjectName}:${tag}"
+                 sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
+                 withCredentials([usernamePassword(credentialsId: "${harbor_auth}", passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh "docker login -u ${username} -p ${password} ${harbor_url}"
+                    sh "docker push ${harbor_url}/${harbor_project}/${imageName}"
+                    sh "echo 镜像上传成功"
+                 }
+                 for(int j=0;j<serverNames.length;j++){
+                    def serverName = serverNames[j];
+                    sshPublisher(publishers: [sshPublisherDesc(configName: "${serverName}", transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "/opt/jenkins_shell/deploy.sh $harbor_url $harbor_project $currentProjectName $tag $currentProjectPort", execTimeout: 1200000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                 }
+        }
+    }
+}

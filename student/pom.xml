@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.cloud.wang</groupId>
+        <artifactId>all</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>student</artifactId>
+    <version>0.0.1</version>
+    <name>student</name>
+    <description>Demo project for Spring Boot</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>student-api</module>
+        <module>student-biz</module>
+    </modules>
+
+</project>

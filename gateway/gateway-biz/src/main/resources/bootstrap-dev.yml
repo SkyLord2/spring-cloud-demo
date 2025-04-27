@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      #配置中心配置
+      config:
+        server-addr: xxx:8848
+        namespace: 3d388542-826c-40b2-ae5e-5d6952b23149
+        file-extension: yaml
+      #发现中心配置
+      discovery:
+        server-addr: xxx:8848
+        namespace: 3d388542-826c-40b2-ae5e-5d6952b23149
